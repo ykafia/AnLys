@@ -1,4 +1,5 @@
 use ndarray::LinalgScalar;
+
 #[derive(Copy,Clone)]
 pub enum DType {
     StringValue,
@@ -18,6 +19,11 @@ pub trait DTypeName {
 }
 
 impl DTypeName for String{
+    fn get_dtype(&self) -> DType{
+        DType::StringValue
+    }
+}
+impl DTypeName for &str{
     fn get_dtype(&self) -> DType{
         DType::StringValue
     }
