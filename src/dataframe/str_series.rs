@@ -35,6 +35,9 @@ where
             )
         }
     }
+    pub fn len(&self) -> usize {
+        self.values.len()
+    }
 }
 
 impl<T> fmt::Display for TextSeries<T>

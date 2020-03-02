@@ -18,16 +18,27 @@ impl StringSeries{
             len : source.len()
         }
     }
+    pub fn len(&self) -> usize {
+        self.values.len()
+    }
+    pub fn add_empty(&self, maxsize : usize) -> StringSeries {
+        let mut result = self.values.clone();
+        while maxsize > result.len() {
+            println!("pushing some string", );
+            result.push("".to_string());
+        }
+        StringSeries::from_vec(result)
+    }
 }
 
 impl fmt::Display for StringSeries {
 
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        let mut result = "\n[".to_string();
+        let mut result = "[".to_string();
         for element in self.values.iter() {
             result += &format!("\"{}\";", element);
         }
-        result += &format!("]\n");
+        result += &format!("]");
         write!(f,"{}",result)
     }
 }

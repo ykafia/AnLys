@@ -35,16 +35,33 @@ where
         }
         
     }
+    pub fn len(&self) -> usize {
+        self.values.len()
+    }
+    pub fn add_empty(&self, maxsize : usize) -> Option<NumSeries<T>> {
+        if maxsize > self.values.len() {
+            let mut newv = self.values.to_vec();
+            for _ in 0..(maxsize-self.values.len()) {
+                newv.push(T::zero());
+            }
+            Some(NumSeries::from_array(&Array::from(newv)).expect("added empty cells"))
+        }
+        else {
+            None
+        }
+        
+        
+    }
 }
 
 impl<T> fmt::Display for NumSeries<T>
     where T : fmt::Display + DTypeName + LinalgScalar {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        let mut result = "\n[".to_string();
+        let mut result = "[".to_string();
         for element in self.values.iter() {
             result += &format!("{};", element);
         }
-        result += &format!("]\n");
+        result += &format!("]");
         write!(f,"{}",result)
     }
 }

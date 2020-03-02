@@ -1,5 +1,8 @@
 use super::*;
 use ndarray::LinalgScalar;
+use std::fmt;
+
+#[derive(Clone)]
 pub enum GenericSeries<U>
     where 
         U : LinalgScalar + DTypeName
@@ -24,5 +27,33 @@ impl<U> GenericSeries<U>
             _ => Err("It's a num series")
         }
     }
+    pub fn len(&self) -> usize {
+        match *self {
+            GenericSeries::StringSeries(ref s) => s.len(),
+            GenericSeries::NumSeries(ref n) => n.len()
+        }
+    }
+    pub fn add_empty(&self, max_size : usize) -> GenericSeries<U>{
+        match *self {
+            GenericSeries::StringSeries(ref s) => 
+                GenericSeries::StringSeries(s.add_empty(max_size)),
+            GenericSeries::NumSeries(ref n) => match n.add_empty(max_size) {
+                Some(x) => GenericSeries::NumSeries(x),
+                None => GenericSeries::NumSeries(n.clone())
+            }
+        }
+    }
     
 }
+
+impl<T> fmt::Display for GenericSeries<T>
+    where T : fmt::Display + DTypeName + LinalgScalar {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+
+        match self {
+            GenericSeries::NumSeries(ref n) =>  write!(f,"{}",n),
+            GenericSeries::StringSeries(ref s) =>  write!(f,"{}",s)
+        }
+    }
+}
+
