@@ -16,7 +16,7 @@ mod tests {
 
         x.add_column(GenericSeries::<f64>::NumSeries(s1),Some("Numbers"));
         println!("First frame : \n{}\n",x);
-        x.add_column(GenericSeries::<f64>::StringSeries(s2),None);
+        x.add_column(GenericSeries::<f64>::StringSeries(s2),Some("Text"));
         println!("Second frame : \n{}",x);
         
 

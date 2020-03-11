@@ -5,19 +5,19 @@ use std::ops::*;
 use std::str::FromStr;
 
 #[derive(Clone)]
-pub enum GenericSeries<U>
+pub enum GenericSeries<T>
     where 
-        U : LinalgScalar + DTypeName + FromStr
+        T : LinalgScalar + DTypeName + FromStr + fmt::Display
 {
     StringSeries(StringSeries),
-    NumSeries(NumSeries<U>)
+    NumSeries(NumSeries<T>)
 }
 
-impl<U> GenericSeries<U>
+impl<T> GenericSeries<T>
     where 
-        U : LinalgScalar + DTypeName + FromStr
+        T : LinalgScalar + DTypeName + FromStr + fmt::Display
 {
-    pub fn try_get_numseries(&self) -> Result<NumSeries<U>,&'static str> {
+    pub fn try_get_numseries(&self) -> Result<NumSeries<T>,&'static str> {
         match *self {
             GenericSeries::NumSeries(ref n) => Ok(n.clone()),
             _ => Err("It's a num series")
@@ -35,7 +35,7 @@ impl<U> GenericSeries<U>
             GenericSeries::NumSeries(ref n) => n.len()
         }
     }
-    pub fn add_empty(&self, max_size : usize) -> GenericSeries<U>{
+    pub fn add_empty(&self, max_size : usize) -> GenericSeries<T>{
         match *self {
             GenericSeries::StringSeries(ref s) => 
                 GenericSeries::StringSeries(s.add_empty(max_size)),
@@ -45,21 +45,19 @@ impl<U> GenericSeries<U>
             }
         }
     }
-    pub fn get_idx(&self, idx : usize) -> U{
+    pub fn get_idx(&self, idx : usize) -> String {
         match *self {
-            GenericSeries::StringSeries(ref s) => 
-                match U::from_str(s[idx].clone().as_str()) {
-                    Ok(x) => x,
-                    Err(_) => panic!("Could not parse from str")
-                },
-            GenericSeries::NumSeries(ref n) => n[idx]
+            GenericSeries::StringSeries(ref s) => s[idx].clone(),
+            GenericSeries::NumSeries(ref n) => n[idx].to_string()
         }
     }
     
 }
 
 impl<T> fmt::Display for GenericSeries<T>
-    where T : fmt::Display + DTypeName + LinalgScalar + FromStr {
+    where 
+        T : fmt::Display + DTypeName + LinalgScalar + FromStr + fmt::Display 
+{
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
 
         match self {
