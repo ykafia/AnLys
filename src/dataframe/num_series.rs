@@ -4,6 +4,7 @@ use super::*;
 use ndarray::prelude::*;
 use std::ops::*;
 use std::fmt;
+use std::vec::IntoIter;
 
 #[derive(Clone)]
 pub struct NumSeries<T>
@@ -49,8 +50,12 @@ where
         else {
             None
         }
-        
-        
+    }
+    pub fn to_vec(&self) -> Vec<T> {
+        self.values.to_vec()
+    } 
+    pub fn into_iter(&self) -> IntoIter<T> {
+        self.to_vec().into_iter()
     }
 }
 
@@ -63,6 +68,22 @@ impl<T> fmt::Display for NumSeries<T>
         }
         result += &format!("]");
         write!(f,"{}",result)
+    }
+}
+
+impl<T> Index<usize> for NumSeries<T> 
+    where T : DTypeName + LinalgScalar
+{
+    type Output = T;
+    fn index(&self, index : usize) -> &T {
+        &self.values[index]
+    }
+}
+impl<T> IndexMut<usize> for NumSeries<T> 
+    where T : DTypeName + LinalgScalar
+{
+    fn index_mut(&mut self, index: usize) -> &mut Self::Output {
+        &mut self.values[index]
     }
 }
 

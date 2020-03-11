@@ -1,5 +1,7 @@
 use super::*;
 use std::fmt;
+use std::ops::{Index,IndexMut};
+use std::slice::Iter;
 
 
 #[derive(Clone)]
@@ -29,6 +31,9 @@ impl StringSeries{
         }
         StringSeries::from_vec(result)
     }
+    pub fn iter(&self) -> Iter<'_, String>  {
+        self.values.iter()
+    }
 }
 
 impl fmt::Display for StringSeries {
@@ -43,3 +48,38 @@ impl fmt::Display for StringSeries {
     }
 }
 
+impl Index<usize> for StringSeries {
+    type Output = String;
+    fn index(&self, index : usize) -> &String {
+        &self.values[index]
+    }
+}
+// impl IndexMut<usize> for StringSeries {
+//     fn index_mut(&mut self, index: usize) -> &mut Self::Output {
+//         &mut self.values[index]
+//     }
+// }
+
+// impl IntoIterator for StringSeries {
+//     type Item = String;
+//     type IntoIter = StringSeriesIterator;
+
+//     fn into_iter(self) -> StringSeriesIterator {
+//         StringSeriesIterator {
+//             series : self,
+//             index : 0
+//         }
+//     }
+// }
+
+// struct StringSeriesIterator {
+//     series : StringSeries,
+//     index : usize
+// }
+
+// impl Iterator for StringSeriesIterator {
+//     type Item = String;
+//     fn next(&mut self) -> Option<String> {
+//         match     
+//     }
+// }

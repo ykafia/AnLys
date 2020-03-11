@@ -15,10 +15,10 @@ mod tests {
         let s2 = StringSeries::from_vec(vec!["bonobo".to_string(),"bonobo 2".to_string()]);
 
         x.add_column(GenericSeries::<f64>::NumSeries(s1),Some("Numbers"));
-        x.add_column(GenericSeries::<f64>::StringSeries(s2),None);
         println!("First frame : \n{}\n",x);
-        x.add_empty();
+        x.add_column(GenericSeries::<f64>::StringSeries(s2),None);
         println!("Second frame : \n{}",x);
+        
 
     }
 }

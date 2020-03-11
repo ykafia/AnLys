@@ -1,11 +1,13 @@
 use super::*;
 use ndarray::LinalgScalar;
 use std::fmt;
+use std::ops::*;
+use std::str::FromStr;
 
 #[derive(Clone)]
 pub enum GenericSeries<U>
     where 
-        U : LinalgScalar + DTypeName
+        U : LinalgScalar + DTypeName + FromStr
 {
     StringSeries(StringSeries),
     NumSeries(NumSeries<U>)
@@ -13,7 +15,7 @@ pub enum GenericSeries<U>
 
 impl<U> GenericSeries<U>
     where 
-        U : LinalgScalar + DTypeName
+        U : LinalgScalar + DTypeName + FromStr
 {
     pub fn try_get_numseries(&self) -> Result<NumSeries<U>,&'static str> {
         match *self {
@@ -43,11 +45,21 @@ impl<U> GenericSeries<U>
             }
         }
     }
+    pub fn get_idx(&self, idx : usize) -> U{
+        match *self {
+            GenericSeries::StringSeries(ref s) => 
+                match U::from_str(s[idx].clone().as_str()) {
+                    Ok(x) => x,
+                    Err(_) => panic!("Could not parse from str")
+                },
+            GenericSeries::NumSeries(ref n) => n[idx]
+        }
+    }
     
 }
 
 impl<T> fmt::Display for GenericSeries<T>
-    where T : fmt::Display + DTypeName + LinalgScalar {
+    where T : fmt::Display + DTypeName + LinalgScalar + FromStr {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
 
         match self {
