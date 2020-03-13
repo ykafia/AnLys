@@ -8,18 +8,27 @@ mod tests {
     use std::str::FromStr;
     
     #[test]
-    fn it_works() {
+    fn dataframe_displayed() {
         let mut x = Frame::<f64>::new();
         
         let s1 = NumSeries::from_vec(vec![1.0,1.0,3.0]).expect("created series");
         let s2 = StringSeries::from_vec(vec!["bonobo".to_string(),"bonobo 2".to_string()]);
 
         x.add_column(GenericSeries::<f64>::NumSeries(s1),Some("Numbers"));
-        println!("First frame : \n{}\n",x);
         x.add_column(GenericSeries::<f64>::StringSeries(s2),Some("Text"));
-        println!("Second frame : \n{}",x);
+        assert!(x.to_string().len()>0);
         
 
+    }
+
+    #[test]
+    fn add_series(){
+        let mut x = Frame::<f64>::new();
+        
+        let s1 = NumSeries::from_vec(vec![1.0,1.0,3.0]).expect("created series");
+        let s2 = NumSeries::from_vec(vec![1.0,1.0,3.0]).expect("created series");
+
+        assert_eq!(s1+s2,NumSeries::from_vec(vec![2.0,2.0,6.0]).expect("created series"))
     }
 }
 

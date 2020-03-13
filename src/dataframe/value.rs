@@ -1,7 +1,7 @@
 use ndarray::LinalgScalar;
 
 
-#[derive(Copy,Clone)]
+#[derive(Copy,Clone,PartialEq,Debug)]
 pub enum DType {
     StringValue,
     Int8,
