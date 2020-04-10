@@ -17,13 +17,13 @@ impl<T> GenericSeries<T>
     where 
         T : LinalgScalar + DTypeName + FromStr + fmt::Display
 {
-    pub fn try_get_numseries(&self) -> Result<NumSeries<T>,&'static str> {
+    pub fn try_as_numseries(&self) -> Result<NumSeries<T>,&'static str> {
         match *self {
             GenericSeries::NumSeries(ref n) => Ok(n.clone()),
             _ => Err("It's a num series")
         }
     }
-    pub fn try_get_textseries(&self) -> Result<StringSeries,&'static str> {
+    pub fn try_as_textseries(&self) -> Result<StringSeries,&'static str> {
         match *self {
             GenericSeries::StringSeries(ref s) => Ok(s.clone()),
             _ => Err("It's a num series")

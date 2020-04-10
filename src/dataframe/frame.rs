@@ -45,7 +45,10 @@ impl<T> Frame<T>
         self.add_empty_from_map();
     }
     pub fn get_column(&mut self, name : &str ) -> &GenericSeries<T> {
-        self.columns_data.get(&name.to_string()).expect("something")
+        self.columns_data.get(&name.to_string()).expect("Column doesn't exist")
+    }
+    pub fn get_column_safe(&mut self, name : &str ) -> Option<&GenericSeries<T>> {
+        self.columns_data.get(&name.to_string())
     }
     pub fn get_mut_column(&mut self, name : &str ) -> &mut GenericSeries<T> {
         self.columns_data.get_mut(&name.to_string()).expect("something")

@@ -1,18 +1,19 @@
 use super::*;
+use ndarray::iter::*;
 use ndarray::prelude::*;
 use ndarray::LinalgScalar;
 use ndarray::ScalarOperand;
 use std::fmt;
 use std::ops::*;
 use std::str::FromStr;
-use std::vec::IntoIter;
 
-#[derive(Clone,PartialEq,Debug)]
+#[derive(Clone, PartialEq, Debug)]
 pub struct NumSeries<T>
 where
     T: LinalgScalar + DTypeName,
 {
     pub values: Array1<T>,
+    pub tmp: ArcArray<T, Ix1>,
     pub dtype: DType,
     pub len: usize,
 }
@@ -30,6 +31,7 @@ where
         } else {
             Ok(NumSeries {
                 values: array.clone(),
+                tmp: array.clone().into_shared(),
                 dtype: array[0].get_dtype(),
                 len: array.dim(),
             })
@@ -50,13 +52,16 @@ where
         }
     }
     pub fn to_vec(&self) -> Vec<T> {
-        self.values.to_vec()
+        self.tmp.clone().to_vec()
     }
-    pub fn into_iter(&self) -> IntoIter<T> {
-        self.to_vec().into_iter()
+    pub fn iter(&self) -> Iter<'_, T, Ix1> {
+        self.tmp.iter()
     }
     pub fn to_generic(&self) -> GenericSeries<T> {
         GenericSeries::<T>::NumSeries(self.clone())
+    }
+    pub fn get(&self,id : usize) -> T {
+        self.tmp[id]
     }
 }
 
