@@ -1,9 +1,8 @@
 use super::*;
 use ndarray::LinalgScalar;
 use std::fmt;
-use std::marker::PhantomData;
 use std::str::FromStr;
-use std::borrow::Cow;
+
 #[derive(Clone)]
 pub enum GenericSeries<T>
     where 
@@ -32,8 +31,7 @@ impl<T> GenericSeries<T>
     pub fn len(&self) -> usize {
         match *self {
             GenericSeries::StringSeries(ref s) => s.len(),
-            GenericSeries::NumSeries(ref n) => n.len(),
-            _ => 0
+            GenericSeries::NumSeries(ref n) => n.len()
         }
     }
     pub fn add_empty(&self, max_size : usize) -> GenericSeries<T>{
@@ -43,14 +41,12 @@ impl<T> GenericSeries<T>
             GenericSeries::NumSeries(ref n) => match n.add_empty(max_size) {
                 Some(x) => GenericSeries::NumSeries(x),
                 None => GenericSeries::NumSeries(n.clone())
-            },
-            _ => panic!("You shouldn't have a series as a phantom data")
+            }
         }
     }pub fn get_idx_string(&self, idx : usize) -> String {
         match *self {
             GenericSeries::StringSeries(ref s) => s[idx].clone(),
-            GenericSeries::NumSeries(ref n) => n[idx].to_string(),
-            _ => panic!("You shouldn't have a Phantom series")
+            GenericSeries::NumSeries(ref n) => n[idx].to_string()
         }
     }
 
@@ -64,8 +60,7 @@ impl<T> GenericSeries<T>
                     Some(r) => r,
                     None => panic!("Bad conversion, my bad")
                 }
-            },
-            _ => panic!("You shouldn't have a Phantom series")
+            }
         }
     }
     
@@ -79,8 +74,7 @@ impl<T> fmt::Display for GenericSeries<T>
 
         match self {
             GenericSeries::NumSeries(ref n) =>  write!(f,"{}",n),
-            GenericSeries::StringSeries(ref s) =>  write!(f,"{}",s),
-            _ => panic!("You shouldn't have a Phantom series")
+            GenericSeries::StringSeries(ref s) =>  write!(f,"{}",s)
         }
     }
 }

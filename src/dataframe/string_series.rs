@@ -1,7 +1,7 @@
 use std::str::FromStr;
 use super::*;
 use std::fmt;
-use std::ops::{Index,IndexMut};
+use std::ops::{Index};
 use std::slice::Iter;
 use ndarray::LinalgScalar;
 

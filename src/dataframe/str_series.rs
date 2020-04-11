@@ -24,7 +24,7 @@ where
             Err("Array is empty")
         }
         else  {
-            let this_type = source.to_vec()[0].get_dtype();
+            // let this_type = source.to_vec()[0].get_dtype();
             Ok(
                 TextSeries {
                     values : source.to_vec(),

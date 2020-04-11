@@ -2,12 +2,10 @@ use super::*;
 use std::fmt;
 use ndarray::LinalgScalar;
 use std::ops::Index;
-use std::ops::IndexMut;
 use std::str::FromStr;
 use std::collections::HashMap;
 #[macro_use]
 use prettytable::{Table, Row, Cell,Attr, color};
-use std::marker::PhantomData;
 
 pub struct Frame<'b,T>
     where 

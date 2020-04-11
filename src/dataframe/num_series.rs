@@ -1,12 +1,10 @@
 use super::*;
-use ndarray::iter::*;
 use ndarray::prelude::*;
 use ndarray::LinalgScalar;
 use ndarray::ScalarOperand;
 use std::fmt;
 use std::ops::*;
 use std::str::FromStr;
-use std::marker::PhantomData;
 
 #[derive(Clone, PartialEq, Debug)]
 pub struct NumSeries<T>

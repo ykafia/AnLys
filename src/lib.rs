@@ -1,11 +1,11 @@
+#[allow(dead_code)]
 mod dataframe;
 mod prelude;
 
+
 #[cfg(test)]
 mod tests {
-    use ndarray::prelude::*;
     use super::prelude::*;
-    use std::str::FromStr;
     
     #[test]
     fn dataframe_displayed() {
@@ -20,7 +20,7 @@ mod tests {
 
     #[test]
     fn add_series(){
-        let mut x = Frame::<f64>::new();
+        // let mut x = Frame::<f64>::new();
         
         let s1 = NumSeries::from_vec(vec![1.0,1.0,3.0]).expect("created series");
         let s2 = NumSeries::from_vec(vec![1.0,1.0,3.0]).expect("created series");
@@ -63,6 +63,7 @@ mod tests {
         assert_eq!(5.0,result)
 
     }
+    
     #[test]
     fn get_row(){
         let mut x = Frame::<f64>::new();
@@ -76,17 +77,10 @@ mod tests {
                             .to_generic(),
             Some("Strings"));
 
-        // println!(
-        //     "{}",
-        //     x.get_row_any(0)
-        //     .values
-        //     .get(
-        //         &"Strings".to_string()
-        //     )
-        //     .expect("Value exist")
-        //     .downcast::<String>()
-        //     .expect("downcasted wrongly")
-        // );
+        println!(
+            "{:?}",
+            x.get_row_any(0)
+        );
     }
 }
 

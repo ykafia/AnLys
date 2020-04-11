@@ -1,5 +1,4 @@
 use ndarray::LinalgScalar;
-use std::ops::*;
 
 #[derive(Copy, Clone, PartialEq, Debug)]
 pub enum DTypeN {
