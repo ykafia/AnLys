@@ -78,7 +78,7 @@ mod tests {
             Some("Strings"));
 
         println!(
-            "{:?}",
+            "{}",
             x.get_row_any(0)
         );
     }

@@ -28,7 +28,6 @@ impl StringSeries{
     pub fn add_empty(&self, maxsize : usize) -> StringSeries {
         let mut result = self.values.clone();
         while maxsize > result.len() {
-            println!("pushing some string", );
             result.push("".to_string());
         }
         StringSeries::from_vec(result)

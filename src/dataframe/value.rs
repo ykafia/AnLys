@@ -1,4 +1,5 @@
 use ndarray::LinalgScalar;
+use std::fmt;
 
 #[derive(Copy, Clone, PartialEq, Debug)]
 pub enum DTypeN {
@@ -144,5 +145,25 @@ pub fn try_into_dtype<'a, T: LinalgScalar + DTypeName + Any>(value: &T) -> Optio
             Some(v) => Some(DType::StringValue(v.clone())),
             None => None,
         },
+    }
+}
+
+impl fmt::Display for DType {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+
+        let value = match *self {
+            DType::StringValue(ref v) => v.clone(),
+            DType::Int8(ref v) => v.to_string(),
+            DType::Int16(ref v) => v.to_string(),
+            DType::Int32(ref v) => v.to_string(),
+            DType::Int64(ref v) => v.to_string(),
+            DType::UInt8(ref v) => v.to_string(),
+            DType::UInt16(ref v) => v.to_string(),
+            DType::UInt32(ref v) => v.to_string(),
+            DType::UInt64(ref v) => v.to_string(),
+            DType::Float32(ref v) => v.to_string(),
+            DType::Float64(ref v) => v.to_string(),
+        };
+        write!(f,"{}",value)
     }
 }
