@@ -10,7 +10,7 @@ use ndarray::LinalgScalar;
 pub struct StringSeries
 {
     pub values: Vec<String>,
-    pub dtype: DType,
+    // pub dtype: DType,
     pub len: usize,
 }
 
@@ -18,7 +18,7 @@ impl StringSeries{
     pub fn from_vec(source : Vec<String>) -> StringSeries {
         StringSeries {
             values : source.to_vec(),
-            dtype : DType::StringValue,
+            // dtype : DType::StringValue,
             len : source.len()
         }
     }

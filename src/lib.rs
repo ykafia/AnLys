@@ -10,7 +10,6 @@ mod tests {
     #[test]
     fn dataframe_displayed() {
         let mut x = Frame::<f64>::new();
-        
         let s1 = NumSeries::from_vec(vec![1.0,1.0,3.0]).expect("created series");
         let s2 = StringSeries::from_vec(vec!["bonobo".to_string(),"bonobo 2".to_string()]);
 
@@ -63,6 +62,31 @@ mod tests {
 
         assert_eq!(5.0,result)
 
+    }
+    #[test]
+    fn get_row(){
+        let mut x = Frame::<f64>::new();
+        x.add_column(
+            NumSeries::from_vec(vec![1.0,1.0,3.0]).expect("created series").to_generic(),
+            Some("numbers")
+        ).add_column(
+            StringSeries::from_vec(
+                vec!["bonobo".to_string(),
+                            "bonobo 2".to_string()])
+                            .to_generic(),
+            Some("Strings"));
+
+        // println!(
+        //     "{}",
+        //     x.get_row_any(0)
+        //     .values
+        //     .get(
+        //         &"Strings".to_string()
+        //     )
+        //     .expect("Value exist")
+        //     .downcast::<String>()
+        //     .expect("downcasted wrongly")
+        // );
     }
 }
 

@@ -7,32 +7,37 @@ use std::str::FromStr;
 use std::collections::HashMap;
 #[macro_use]
 use prettytable::{Table, Row, Cell,Attr, color};
+use std::marker::PhantomData;
 
-pub struct Frame<T>
+pub struct Frame<'b,T>
     where 
         T : LinalgScalar + DTypeName + FromStr + fmt::Display
 {
-    pub columns_data : HashMap<String,GenericSeries<T>>
+    pub columns_data : HashMap<&'b str,GenericSeries<T>>,
 }
 
-impl<T> Frame<T> 
+impl<'b,T> Frame<'b,T> 
     where 
         T : LinalgScalar + DTypeName + FromStr + fmt::Display
 {
-    pub fn new() -> Frame<T> {
+    pub fn new() -> Frame<'b,T> {
         Frame {
-            columns_data : HashMap::new()
+            columns_data : HashMap::new(),            
         }
     }
     pub fn add_empty_from_map(&mut self) {
         let max_size : usize = self.columns_data.iter().map(|(_,val)| val.len()).max().unwrap_or(0);
-        self.columns_data = self.columns_data
-            .iter()
+        
+        
+        self.columns_data = 
+            self.columns_data
+            .clone()
+            .into_iter()
             .map(
                 |(key,val)|
-                (key.clone(),val.add_empty(max_size))
+                (key.clone(),val.add_empty(max_size).clone())
             )
-            .collect::<Vec<(String,GenericSeries<T>)>>()
+            .collect::<Vec<(&str,GenericSeries<T>)>>()
             .iter()
             .cloned()
             .collect();
@@ -40,34 +45,44 @@ impl<T> Frame<T>
     pub fn row_len(&self) -> usize {
         self.columns_data.iter().map(|(_,val)| val.len()).max().unwrap_or(0)
     }
-    pub fn add_column(&mut self,series : GenericSeries<T>,name : Option<&str>) {
-        self.columns_data.insert(name.unwrap_or("").to_string(), series);
+    pub fn add_column(&mut self,series : GenericSeries<T>,name : Option<&'b str>) -> &mut Self {
+        self.columns_data.insert(name.unwrap_or(""), series);
         self.add_empty_from_map();
+        self
     }
     pub fn get_column(&mut self, name : &str ) -> &GenericSeries<T> {
-        self.columns_data.get(&name.to_string()).expect("Column doesn't exist")
+        self.columns_data.get(name).expect("Column doesn't exist")
     }
     pub fn get_column_safe(&mut self, name : &str ) -> Option<&GenericSeries<T>> {
-        self.columns_data.get(&name.to_string())
+        self.columns_data.get(name)
     }
     pub fn get_mut_column(&mut self, name : &str ) -> &mut GenericSeries<T> {
-        self.columns_data.get_mut(&name.to_string()).expect("something")
+        self.columns_data.get_mut(name).expect("something")
     }
     pub fn get_row(&self, idx : usize) -> Vec<(String,String)>{
         let mut result = Vec::new();
         for (key,value) in self.columns_data.iter() {
-            result.push((key.clone(),value.get_idx(idx)));
+            result.push((key.to_string(),value.get_idx_string(idx)));
         }
         result
     }
+    pub fn get_row_any(&self, idx:usize) -> FrameRow {
+        let mut row = FrameRow::new(
+            HashMap::new()
+        );
+        for (colname,series) in self.columns_data.iter() {
+            row.values.insert(*colname, series.get_idx(idx));
+        }
+        row
+    }
 }
 
-impl<T> fmt::Display for Frame<T>
+impl<'b,T> fmt::Display for Frame<'b,T>
     where T : fmt::Display + DTypeName + LinalgScalar + FromStr {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let mut table = Table::new();
         let mut names = vec!["ID".to_string()];
-        names.extend(self.columns_data.iter().map(|(k,_)| k.clone()).collect::<Vec<String>>());
+        names.extend(self.columns_data.iter().map(|(k,_)| k.to_string()).collect::<Vec<String>>());
         table.add_row(
             Row::new(
                 names
@@ -102,7 +117,7 @@ impl<T> fmt::Display for Frame<T>
     }
 }
 
-impl<T> Index<&str> for Frame<T> 
+impl<'b,T> Index<&str> for Frame<'b,T> 
     where T : LinalgScalar + DTypeName + FromStr + fmt::Display
 {
     type Output = GenericSeries<T>;

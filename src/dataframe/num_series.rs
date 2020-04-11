@@ -6,6 +6,7 @@ use ndarray::ScalarOperand;
 use std::fmt;
 use std::ops::*;
 use std::str::FromStr;
+use std::marker::PhantomData;
 
 #[derive(Clone, PartialEq, Debug)]
 pub struct NumSeries<T>
@@ -14,8 +15,8 @@ where
 {
     pub values: Array1<T>,
     pub tmp: ArcArray<T, Ix1>,
-    pub dtype: DType,
     pub len: usize,
+
 }
 
 impl<T> NumSeries<T>
@@ -32,7 +33,7 @@ where
             Ok(NumSeries {
                 values: array.clone(),
                 tmp: array.clone().into_shared(),
-                dtype: array[0].get_dtype(),
+                // dtype: array[0].get_dtype(),
                 len: array.dim(),
             })
         }
@@ -54,8 +55,8 @@ where
     pub fn to_vec(&self) -> Vec<T> {
         self.tmp.clone().to_vec()
     }
-    pub fn iter(&self) -> Iter<'_, T, Ix1> {
-        self.tmp.iter()
+    pub fn iter(&self) -> ndarray::iter::Iter<'_, T,Ix1> {
+        self.values.iter()
     }
     pub fn to_generic(&self) -> GenericSeries<T> {
         GenericSeries::<T>::NumSeries(self.clone())

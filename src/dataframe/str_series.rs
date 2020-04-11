@@ -12,7 +12,6 @@ where
     T: TextValue + DTypeName
 {
     pub values: Vec<T>,
-    pub dtype: DType,
     pub len: usize,
 }
 
@@ -29,7 +28,7 @@ where
             Ok(
                 TextSeries {
                     values : source.to_vec(),
-                    dtype : this_type,
+                    // dtype : this_type,
                     len : source.len()
                 }
             )
