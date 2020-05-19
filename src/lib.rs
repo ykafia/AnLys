@@ -14,10 +14,10 @@ mod tests {
     #[test]
     fn data_store_access() {
         let mut x = DataStore::new();
-        
-        x.insert_num_array("some nums", NumArrayTypes::from(&[0u8,5u8,9u8][..]));
-        x.insert_num_array("some floats", NumArrayTypes::from(&[3f32,3.0,4.0,8.5][..]));
-        x.insert_str_array("some text",&["hello","world","how","are","you"][..]);
+        let z  = IntArray::from(vec![3i32,2,3,65,8]);
+        let w = FloatArray::from(vec![3f32,3.0,3.4]);
+        x.insert_num_array("some numbers", z.into()).expect("added column");
+        x.insert_num_array("some floats", w.into()).expect("added column");
     }
 
     

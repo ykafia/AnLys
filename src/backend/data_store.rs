@@ -1,13 +1,13 @@
 use super::*;
 use std::collections::HashMap;
-#[derive(Clone)]
-pub struct DataStore<'names, 'array, 'content> {
-    pub num_store: HashMap<&'names str, NumArrayTypes<'array>>,
-    pub text_store: HashMap<&'names str, &'array [&'content str]>,
+
+pub struct DataStore<'names> {
+    pub num_store: HashMap<&'names str, GenericNumArray>,
+    pub text_store: HashMap<&'names str, Vec<String>>,
 }
 
-impl<'names, 'array, 'str_content> DataStore<'names, 'array, 'str_content> {
-    pub fn new() -> DataStore<'names, 'array, 'str_content> {
+impl<'names> DataStore<'names> {
+    pub fn new() -> DataStore<'names> {
         DataStore {
             num_store: HashMap::new(),
             text_store: HashMap::new(),
@@ -16,7 +16,7 @@ impl<'names, 'array, 'str_content> DataStore<'names, 'array, 'str_content> {
     pub fn insert_num_array(
         &mut self,
         name: &'names str,
-        array: NumArrayTypes<'array>,
+        array: GenericNumArray,
     ) -> Result<(), &'static str> {
         if self.get_column_names().contains(&name.to_string()) {
             Err("column already exists")
@@ -29,7 +29,7 @@ impl<'names, 'array, 'str_content> DataStore<'names, 'array, 'str_content> {
     pub fn insert_str_array(
         &mut self,
         name: &'names str,
-        array: &'array [&'str_content str],
+        array: Vec<String>,
     ) -> Result<(), &'static str> {
         if self.get_column_names().contains(&name.to_string()) {
             Err("column already exists")
@@ -55,5 +55,29 @@ impl<'names, 'array, 'str_content> DataStore<'names, 'array, 'str_content> {
         names.append(&mut text_names);
         names.append(&mut num_names);
         names
+    }
+    pub fn normalize_size(&mut self) {
+        let max_size : usize = 
+            std::cmp::max(
+                self.num_store.iter().map(|(_,i)| i.len()).max().unwrap_or(0),
+                self.text_store.iter().map(|(_,i)| i.len()).max().unwrap_or(0)
+            );
+        let mut keys = self.num_store.keys().map(|u| u.to_string()).collect::<Vec<String>>();
+        for i in keys {
+            let len = self.num_store.get(i.as_str()).unwrap().len();
+            if len < max_size {
+                self.num_store.get_mut(i.as_str()).unwrap().expand(max_size-len) 
+            }
+        }
+        keys = self.text_store.keys().map(|u| u.to_string()).collect::<Vec<String>>();
+        for i in keys {
+            let len = self.text_store.get(i.as_str()).unwrap().len();
+            if len < max_size {
+                for _ in 0..max_size-len {
+                    self.text_store.get_mut(i.as_str()).unwrap().push("".to_string())
+                }                
+            }
+
+        }
     }
 }
